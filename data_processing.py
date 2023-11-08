@@ -126,6 +126,28 @@ my_players_mid = my_table_players.filter(lambda x: x['position'] == 'midfielder'
 print(f"Average numbers of passes: ")
 print(f"By forwards: {my_players_forward.aggregate(lambda x: sum(x) / len(x), 'passes')}")
 print(f"By midfielders: {my_players_mid.aggregate(lambda x: sum(x) / len(x), 'passes')}")
+print()
+
+my_table_titanic = my_DB.search('titanic')
+my_fare_first = my_table_titanic.filter(lambda x: int(x['class']) == 1)
+my_fare_third = my_table_titanic.filter(lambda x: int(x['class']) == 3)
+print(f"Average fare paid by passengers: ")
+print(f"Paid by first classes: {my_fare_first.aggregate(lambda x: sum(x) / len(x), 'fare')}")
+print(f"Paid by third classes: {my_fare_third.aggregate(lambda x: sum(x) / len(x), 'fare')}")
+print()
+
+my_survival_male = my_table_titanic.filter(lambda x: str(x['gender']) == 'M')
+my_survival_female = my_table_titanic.filter(lambda x: str(x['gender']) == 'F')
+my_survival_male_lived = (my_survival_male.filter(lambda x: str(x['survived']) == 'yes'))
+my_survival_female_lived = (my_survival_female.filter(lambda x: (str(x['survived']) == 'yes')))
+survival_num_male = my_survival_male_lived.aggregate(lambda x: len(x), 'fare')
+survival_num_female = my_survival_female_lived.aggregate(lambda x: len(x), 'fare')
+survival_rate_male = survival_num_male / my_survival_male.aggregate(lambda x: len(x), 'fare') * 100
+survival_rate_female = survival_num_female / my_survival_female.aggregate(lambda x: len(x), 'fare') * 100
+print(f"Male's survival rate: {survival_rate_male}")
+print(f"Female's survival rate: {survival_rate_female}")
+
+
 
 
 
