@@ -27,6 +27,12 @@ with open(os.path.join(__location__, 'Teams.csv')) as f:
     for r in rows:
         teams.append(dict(r))
 
+titanic = []
+with open(os.path.join(__location__, 'Titanic.csv')) as f:
+    rows = csv.DictReader(f)
+    for r in rows:
+        titanic.append(dict(r))
+
 
 class DB:
     def __init__(self):
@@ -84,11 +90,12 @@ class Table:
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
+
 table1 = Table('cities', cities)
 table2 = Table('countries', countries)
 table3 = Table('players', players)
-table4 = Table('teams', players)
-table5 = Table('titanic', players)
+table4 = Table('teams', teams)
+table5 = Table('titanic', titanic)
 my_DB = DB()
 my_DB.insert(table1)
 my_DB.insert(table2)
@@ -99,6 +106,28 @@ my_table1 = my_DB.search('cities')
 my_table3 = my_DB.search('players')
 
 print(my_table3.table_name, my_table3.table)
+print()
+print("Player on a team with “ia” in the team name played less than 200 minutes and made more than 100 passes:")
+my_table3_filtered = my_table3.filter(lambda x: "ia" in x['team']).filter(lambda x: int(x['minutes']) < 200).filter(lambda x: int(x['passes']) > 100)
+print(my_table3_filtered)
+print()
+my_table_team = my_DB.search('teams')
+# print(my_table_team)
+my_table_select_bl10 = my_table_team.filter(lambda x: int(x['ranking']) < 10)
+my_table_select_ab10 = my_table_team.filter(lambda x: int(x['ranking']) >= 10)
+print(f"Average number of games played for")
+print(f"Rankings below 10: {my_table_select_bl10.aggregate(lambda x: sum(x) / len(x), 'games')}")
+print(f"Rankings above or equal to 10: {my_table_select_ab10.aggregate(lambda x: sum(x) / len(x), 'games')}")
+print()
+
+my_table_players = my_DB.search('players')
+my_players_forward = my_table_players.filter(lambda x: x['position'] == 'forward')
+my_players_mid = my_table_players.filter(lambda x: x['position'] == 'midfielder')
+print(f"Average numbers of passes: ")
+print(f"By forwards: {my_players_forward.aggregate(lambda x: sum(x) / len(x), 'passes')}")
+print(f"By midfielders: {my_players_mid.aggregate(lambda x: sum(x) / len(x), 'passes')}")
+
+
 
 # print("Test filter: only filtering out cities in Italy")
 # my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
@@ -130,7 +159,7 @@ print(my_table3.table_name, my_table3.table)
 # print("Selecting just three fields, city, country, and temperature")
 # print(my_table3_filtered.select(['city', 'country', 'temperature']))
 # print()
-#
+
 # print("Print the min and max temperatures for cities in EU that do not have coastlines")
 # my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'yes').filter(lambda x: x['coastline'] == 'no')
 # print("Min temp:", my_table3_filtered.aggregate(lambda x: min(x), 'temperature'))
