@@ -148,8 +148,8 @@ print(f"Male's survival rate: {survival_rate_male}")
 print(f"Female's survival rate: {survival_rate_female}")
 
 
-
-
+my_male_embarked_sh = my_table_titanic.filter(lambda x: x['embarked'] == 'Southampton').filter(lambda x: x['gender'] == 'M').aggregate(lambda x: len(x), 'fare')
+print(my_male_embarked_sh)
 
 # print("Test filter: only filtering out cities in Italy")
 # my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
