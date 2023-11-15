@@ -70,11 +70,23 @@ class Table:
             if condition(item1):
                 filtered_table.table.append(item1)
         return filtered_table
-    
+
+    def __is_float(self, element):
+        if element is None:
+            return False
+        try:
+            float(element)
+            return True
+        except ValueError:
+            return False
+
     def aggregate(self, function, aggregation_key):
         temps = []
         for item1 in self.table:
-            temps.append(float(item1[aggregation_key]))
+            if self.__is_float(item1[aggregation_key]):
+                temps.append(float(item1[aggregation_key]))
+            else:
+                temps.append(item1[aggregation_key])
         return function(temps)
     
     def select(self, attributes_list):
@@ -161,14 +173,14 @@ print(my_male_embarked_sh)
 # print(my_table1_selected)
 # print()
 #
-# print("Calculting the average temperature without using aggregate for cities in Italy")
+# print("Calculating the average temperature without using aggregate for cities in Italy")
 # temps = []
 # for item in my_table1_filtered.table:
 #     temps.append(float(item['temperature']))
 # print(sum(temps)/len(temps))
 # print()
 #
-# print("Calculting the average temperature using aggregate for cities in Italy")
+# print("Calculating the average temperature using aggregate for cities in Italy")
 # print(my_table1_filtered.aggregate(lambda x: sum(x)/len(x), 'temperature'))
 # print()
 #
